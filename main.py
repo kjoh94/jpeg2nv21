@@ -6,11 +6,11 @@ import sys
 import cv2
 import numpy as np
 
-def jpeg_to_nv21(input_path):
+def jpeg_to_nv21_raw(input_path):
     # Read the JPEG image
     img = cv2.imread(input_path)
     height, width, _ = img.shape
-    output_path = os.path.splitext(input_path)[0] + f"_{width}_{height}_nv21.yuv"
+    output_path = os.path.splitext(input_path)[0] + f"_{width}_{height}.nv21"
 
     # Convert the color space from BGR (default in OpenCV) to YUV
     yuv_img = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
@@ -33,13 +33,30 @@ def jpeg_to_nv21(input_path):
         f.write(nv21_data.tobytes())
 
 
+def jpeg_to_rgba_raw(input_path):
+    # Read the JPEG image
+    img = cv2.imread(input_path)
+    height, width, _ = img.shape
+    output_path = os.path.splitext(input_path)[0] + f"_{width}_{height}.rgba"
+
+    # Convert the color space from BGR (default in OpenCV) to RGBA
+    rgba_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
+
+    # Write the raw RGBA data to a file
+    with open(output_path, 'wb') as f:
+        f.write(rgba_img.tobytes())
+
+
+
+
 def main():
     if len(sys.argv) != 2:
         return
 
     input_image_path = sys.argv[1]
 
-    jpeg_to_nv21(input_image_path)
+    jpeg_to_nv21_raw(input_image_path)
+    jpeg_to_rgba_raw(input_image_path)
 
     print("Conversion complete.")
 
